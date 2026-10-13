@@ -1,22 +1,23 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { QUESTIONS } from './data/questions.js';
-import { ArrowRight, ArrowLeft, BookOpen, Check, Clock3, Crown, GraduationCap, Heart, Lightbulb, RotateCcw, Share2, Sparkles, Target, Trophy, Users, Zap, X, Volume2, VolumeX } from 'lucide-react';
+import { ArrowRight, ArrowLeft, BookOpen, Check, Clock3, Crown, Download, GraduationCap, Heart, Lightbulb, RotateCcw, Share2, Sparkles, Target, Trophy, Users, Zap, X } from 'lucide-react';
 
 const TAGS = [
-  { min: 0, max: 10, title: '👻 Campus NPC', line: 'তোমাকে campus-এ দেখা যায় না, শুধু attendance sheet-এ তোমার অস্তিত্ব আছে।🤲' },
-  { min: 11, max: 20, title: '🐣 Lost Freshie', line: 'ভাই, ভুল করে অন্য department-এ ঢুকেছো?☠️' },
-  { min: 21, max: 30, title: '🎮 Tutorial Mode', line: 'Campus life-এর tutorial শেষ করো আগে, তারপর main story!😔' },
-  { min: 31, max: 40, title: '🛌 Attendance Warrior', line: 'পড়তে আসো না, absent হওয়ার ঝুঁকি নিতে আসো!🤨' },
-  { min: 41, max: 50, title: '🤝 NPC With Friends', line: 'না ভালো, না খারাপ—তুমিই মাঝখানের মানুষ!🌚' },
-  { min: 51, max: 60, title: '😎 Certified Viber', line: 'Class মোটামুটি, canteen attendance 100%!👀' },
-  { min: 61, max: 70, title: '🗣️ Gossip Department Head', line: 'তোমাকে ছাড়া campus boring!🌚' },
-  { min: 71, max: 80, title: '💘 Campus Main Character', line: 'নিজের life একটা movie, আর crush হলো unpaid co-star!🙂' },
-  { min: 81, max: 90, title: '👑 Campus Legend', line: 'তুমি campus-এ আসো না, campus তোমার জন্য অপেক্ষা করে!🤲' },
-  { min: 91, max: 99, title: '💀 Final Boss', line: 'Sir পর্যন্ত তোমার নাম জানে—কিন্তু কোন কারণে, সেটা প্রশ্ন!☠️' },
-  { min: 100, max: 100, title: '☠️ Campus Menace', line: 'University তোমাকে নিয়ে research করা উচিত!👀' },
+  { min: 0, max: 10, art: 'ghost', emoji: '👻', accent: '#9b8cff', title: 'Campus NPC', line: 'তোমাকে campus-এ দেখা যায় না, শুধু attendance sheet-এ তোমার অস্তিত্ব আছে।🤲' },
+  { min: 11, max: 20, art: 'chick', emoji: '🐣', accent: '#ffd36a', title: 'Lost Freshie', line: 'ভাই, ভুল করে অন্য department-এ ঢুকেছো?☠️' },
+  { min: 21, max: 30, art: 'gamepad', emoji: '🎮', accent: '#6be3c0', title: 'Tutorial Mode', line: 'Campus life-এর tutorial শেষ করো আগে, তারপর main story!😔' },
+  { min: 31, max: 40, art: 'bed', emoji: '🛌', accent: '#8db5ff', title: 'Attendance Warrior', line: 'পড়তে আসো না, absent হওয়ার ঝুঁকি নিতে আসো!🤨' },
+  { min: 41, max: 50, art: 'friends', emoji: '🤝', accent: '#f4a7d8', title: 'NPC With Friends', line: 'না ভালো, না খারাপ—তুমিই মাঝখানের মানুষ!🌚' },
+  { min: 51, max: 60, art: 'cool', emoji: '😎', accent: '#ffb16e', title: 'Certified Viber', line: 'Class মোটামুটি, canteen attendance 100%!👀' },
+  { min: 61, max: 70, art: 'gossip', emoji: '🗣️', accent: '#d4a6ff', title: 'Gossip Department Head', line: 'তোমাকে ছাড়া campus boring!🌚' },
+  { min: 71, max: 80, art: 'heart', emoji: '💘', accent: '#ff8fbd', title: 'Campus Main Character', line: 'নিজের life একটা movie, আর crush হলো unpaid co-star!🙂' },
+  { min: 81, max: 90, art: 'crown', emoji: '👑', accent: '#f3cc71', title: 'Campus Legend', line: 'তুমি campus-এ আসো না, campus তোমার জন্য অপেক্ষা করে!🤲' },
+  { min: 91, max: 99, art: 'boss', emoji: '💀', accent: '#8ef0b0', title: 'Final Boss', line: 'Sir পর্যন্ত তোমার নাম জানে—কিন্তু কোন কারণে, সেটা প্রশ্ন!☠️' },
+  { min: 100, max: 100, art: 'menace', emoji: '☠️', accent: '#ff777f', title: 'Campus Menace', line: 'University তোমাকে নিয়ে research করা উচিত!👀' },
 ];
 const getTag = (percentage) => TAGS.find(tag => percentage >= tag.min && percentage <= tag.max) || TAGS[0];
-const getBest = () => { try { return Number(localStorage.getItem('vuian-personal-best') || 0); } catch { return 0; } };
+const BEST_SCORE_KEY = 'vuian-personal-best';
+const getBest = () => { try { const value = Number(window.localStorage.getItem(BEST_SCORE_KEY) || 0); return Number.isFinite(value) ? Math.max(0, Math.min(QUESTIONS.length, value)) : 0; } catch { return 0; } };
 
 function Brand({ onClick }) { return <button className="brand" onClick={onClick} aria-label="গর্বিত VUian home"><span className="brand-mark"><Crown size={19}/></span><span className="brand-word">গর্বিত <b>VUian</b><small>YOUR CAMPUS. YOUR STORY.</small></span></button>; }
 function Header({ page, setPage }) { return <header className="topbar"><div className="topbar-inner"><Brand onClick={() => setPage('home')}/><div className="header-tag"><span className="status-dot"/> VU TRIVIA + CAMPUS FUN</div><button className="button button-small button-primary" onClick={() => setPage(page === 'quiz' ? 'quiz' : 'setup')}>{page === 'quiz' ? 'চলো খেলি' : 'খেলা শুরু'} <ArrowRight size={15}/></button></div></header>; }
@@ -88,67 +89,181 @@ function QuizPage({ player, onFinish, setPage }) {
   </main>;
 }
 
+async function makeStoryCanvas(result, tag) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 1080;
+  canvas.height = 1920;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas is not supported in this browser.');
+
+  const bg = ctx.createLinearGradient(0, 0, 1080, 1920);
+  bg.addColorStop(0, '#090b12');
+  bg.addColorStop(0.48, '#171329');
+  bg.addColorStop(1, '#080a0f');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Soft colored glow and editorial rings.
+  const glow = ctx.createRadialGradient(540, 640, 40, 540, 640, 590);
+  glow.addColorStop(0, `${tag.accent}44`);
+  glow.addColorStop(1, `${tag.accent}00`);
+  ctx.fillStyle = glow;
+  ctx.fillRect(0, 80, 1080, 1160);
+  ctx.strokeStyle = `${tag.accent}35`;
+  ctx.lineWidth = 2;
+  [290, 360, 430].forEach((radius) => {
+    ctx.beginPath();
+    ctx.arc(540, 620, radius, 0, Math.PI * 2);
+    ctx.stroke();
+  });
+
+  const roundRect = (x, y, w, h, r) => {
+    ctx.beginPath();
+    ctx.roundRect(x, y, w, h, r);
+  };
+  const centered = (text, y, font, color) => {
+    ctx.font = font;
+    ctx.fillStyle = color;
+    ctx.textAlign = 'center';
+    ctx.fillText(text, 540, y, 900);
+  };
+
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#f0c66a';
+  ctx.font = '800 30px Arial, sans-serif';
+  ctx.fillText('গর্বিত VUian', 540, 120);
+  ctx.fillStyle = '#a8adbd';
+  ctx.font = '700 20px Arial, sans-serif';
+  ctx.letterSpacing = '5px';
+  ctx.fillText('YOUR CAMPUS. YOUR STORY.', 540, 166);
+  ctx.letterSpacing = '0px';
+
+  // Tag sticker illustration.
+  const sticker = ctx.createLinearGradient(260, 300, 820, 940);
+  sticker.addColorStop(0, `${tag.accent}2c`);
+  sticker.addColorStop(1, '#ffffff08');
+  ctx.fillStyle = sticker;
+  roundRect(220, 300, 640, 640, 72);
+  ctx.fill();
+  ctx.strokeStyle = `${tag.accent}88`;
+  ctx.lineWidth = 3;
+  roundRect(220, 300, 640, 640, 72);
+  ctx.stroke();
+  try {
+    const illustration = new Image();
+    illustration.src = `/tags/${tag.art}.svg`;
+    await illustration.decode();
+    ctx.drawImage(illustration, 260, 340, 560, 560);
+  } catch {
+    centered(tag.emoji, 710, '230px "Apple Color Emoji", "Segoe UI Emoji", sans-serif', '#ffffff');
+  }
+  centered('CAMPUS VIBES TAG', 1010, '800 24px Arial, sans-serif', tag.accent);
+
+  // Player name and score.
+  centered(result.name, 1100, '800 58px "Noto Sans Bengali", "Hind Siliguri", Arial, sans-serif', '#ffffff');
+  centered(`${result.points} / ${result.total} POINTS`, 1175, '700 30px Arial, sans-serif', '#c5c9d5');
+  ctx.fillStyle = `${tag.accent}20`;
+  roundRect(250, 1225, 580, 170, 38);
+  ctx.fill();
+  ctx.strokeStyle = `${tag.accent}70`;
+  ctx.lineWidth = 2;
+  roundRect(250, 1225, 580, 170, 38);
+  ctx.stroke();
+  centered(`${result.percentage}%`, 1340, '900 88px Arial, sans-serif', tag.accent);
+
+  centered(tag.title, 1490, '800 46px "Noto Sans Bengali", "Hind Siliguri", Arial, sans-serif', '#ffffff');
+  ctx.font = '500 29px "Noto Sans Bengali", "Hind Siliguri", Arial, sans-serif';
+  ctx.fillStyle = '#c4c7d3';
+  const words = tag.line.split(' ');
+  const lines = [];
+  let line = '';
+  words.forEach((word) => {
+    const test = line ? `${line} ${word}` : word;
+    if (ctx.measureText(test).width > 830 && line) { lines.push(line); line = word; }
+    else line = test;
+  });
+  if (line) lines.push(line);
+  lines.slice(0, 3).forEach((text, i) => ctx.fillText(text, 540, 1560 + i * 46));
+
+  ctx.strokeStyle = '#ffffff1c';
+  ctx.beginPath();
+  ctx.moveTo(100, 1740);
+  ctx.lineTo(980, 1740);
+  ctx.stroke();
+  centered('তুমিও খেলো — CAMPUS VIBES', 1800, '700 28px "Noto Sans Bengali", "Hind Siliguri", Arial, sans-serif', '#f0c66a');
+  centered(window.location.host || 'campus-vibes', 1850, '500 20px Arial, sans-serif', '#8d93a4');
+  return canvas;
+}
+
+function canvasToBlob(canvas) {
+  return new Promise((resolve, reject) => {
+    canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Could not generate story image.')), 'image/png');
+  });
+}
+
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
 function ResultPage({ setPage, result, best, isNewBest }) {
   const [showReview, setShowReview] = useState(false);
+  const [shareStatus, setShareStatus] = useState('');
   const title = getTag(result.percentage);
-  const share = async () => {
-    const shareText = `🎮 CAMPUS VIBES — Ultimate Tag System\nআমি ${result.name}! আমার score ${result.percentage}% (${result.points}/${result.total})\nআমার tag: ${title.title}\n${title.line}\nতুমিও খেলো — গর্বিত VUian Campus Fun Quiz!`;
 
-    // Prefer the native Android/iOS share sheet when available.
-    if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
-      try {
-        await navigator.share({ title: 'গর্বিত VUian', text: shareText });
-        return;
-      } catch (e) {
-        // Closing the native share sheet is not an error; don't show a warning.
-        if (e?.name === 'AbortError') return;
-        // Continue to copy fallbacks if native sharing fails.
-      }
-    }
-
-    // Clipboard API requires a secure context on many mobile browsers.
+  const downloadStory = async () => {
     try {
-      if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
-        await navigator.clipboard.writeText(shareText);
-        alert('Result copy হয়েছে! এখন WhatsApp বা অন্য অ্যাপে paste করে share করো।');
-        return;
-      }
-    } catch (e) {
-      // Try the legacy fallback below (useful when testing over local Wi-Fi HTTP).
+      const blob = await canvasToBlob(makeStoryCanvas(result, title));
+      downloadBlob(blob, `vuian-campus-vibes-${title.art}.png`);
+      setShareStatus('Story image download শুরু হয়েছে। Instagram/Facebook Story-তে upload করো।');
+    } catch (error) {
+      setShareStatus('Image তৈরি করা যায়নি। অন্য browser-এ চেষ্টা করো।');
     }
-
-    // Legacy copy fallback for browsers where Clipboard API is unavailable.
-    try {
-      const textarea = document.createElement('textarea');
-      textarea.value = shareText;
-      textarea.setAttribute('readonly', '');
-      textarea.style.position = 'fixed';
-      textarea.style.opacity = '0';
-      textarea.style.fontSize = '16px';
-      document.body.appendChild(textarea);
-      textarea.focus();
-      textarea.select();
-      textarea.setSelectionRange(0, textarea.value.length);
-      const copied = document.execCommand('copy');
-      document.body.removeChild(textarea);
-      if (copied) {
-        alert('Result copy হয়েছে! এখন WhatsApp বা অন্য অ্যাপে paste করে share করো।');
-        return;
-      }
-    } catch (e) {
-      // Final manual-copy fallback below.
-    }
-
-    window.prompt('Result text copy করে share করো:', shareText);
   };
+
+  const shareStory = async () => {
+    setShareStatus('');
+    try {
+      const blob = await canvasToBlob(makeStoryCanvas(result, title));
+      const file = new File([blob], `vuian-campus-vibes-${title.art}.png`, { type: 'image/png' });
+      const shareText = `🎓 গর্বিত VUian Campus Vibes\nআমার tag: ${title.emoji} ${title.title}\nScore: ${result.points}/${result.total}\n${title.line}`;
+      if (typeof File !== 'undefined' && navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({ title: 'গর্বিত VUian — Campus Vibes', text: shareText, files: [file] });
+        setShareStatus('Share menu খোলা হয়েছে। Instagram/Facebook বা পছন্দের app বেছে নাও।');
+        return;
+      }
+      downloadBlob(blob, `vuian-campus-vibes-${title.art}.png`);
+      setShareStatus('এই browser image সরাসরি share করতে দেয় না, তাই Story image download হয়েছে। এখন Instagram/Facebook Story-তে upload করো।');
+    } catch (error) {
+      if (error?.name === 'AbortError') return;
+      setShareStatus('Share করা যায়নি। Story image download button ব্যবহার করো।');
+    }
+  };
+
   return <main className="subpage result-page"><div className="result-glow"/><div className="result-container">
     <div className="eyebrow"><Sparkles size={14}/> RUN COMPLETE</div><div className="result-crown"><Trophy size={36}/></div>
     <h1>ভালো খেলেছ, <span className="text-gradient">{result.name}!</span></h1><p className="result-subtitle">সব প্রশ্ন শেষ! এবার তোমার CAMPUS VIBES tag দেখো।</p>
-    <div className="score-card"><div className="score-ring" style={{'--score':`${result.percentage}%`}}><div className="score-ring-inner"><small>YOUR POINTS</small><strong>{result.points}<i>/{result.total}</i></strong><span>{result.percentage}%</span></div></div>
-      <div className="score-details"><div><span>Recommended option মিলেছে</span><b>{result.points} <small>/ {result.total}</small></b></div><div><span>উত্তর দিয়েছ</span><b>{result.answered} <small>/ {result.total}</small></b></div><div><span>তোমার title</span><b className="rank-text">{title.title}</b></div><div><span>Personal best</span><b>{best} / {result.total} {isNewBest && <small className="new-best">NEW BEST!</small>}</b></div></div>
+    <div className={`tag-art-card tag-art-${title.art}`} style={{ '--tag-accent': title.accent }}>
+      <div className="tag-art-orbit tag-art-orbit-one"/><div className="tag-art-orbit tag-art-orbit-two"/>
+      <div className="tag-art-topline"><span>গর্বিত VUian</span><span>YOUR CAMPUS. YOUR STORY.</span></div>
+      <div className="tag-art-sticker" role="img" aria-label={`${title.title} funny illustration`}><img src={`/tags/${title.art}.svg`} alt={`${title.title} funny illustration`}/></div>
+      <div className="tag-art-label">YOUR CAMPUS VIBES TAG</div>
+      <h2>{title.title}</h2><p>{title.line}</p>
+      <div className="tag-art-score"><span>YOUR SCORE</span><strong>{result.points}<small>/{result.total}</small></strong><b>{result.percentage}%</b></div>
     </div>
-    <div className="result-message"><Sparkles size={19}/><div><b>{title.title}</b><p>{title.line}</p></div></div>
-    <div className="result-actions"><button className="button button-primary button-large" onClick={() => setPage('setup')}><RotateCcw size={17}/> আবার খেলো</button><button className="button button-ghost button-large" onClick={share}><Share2 size={17}/> Result share করো</button></div>
+    <div className="score-card"><div className="score-ring" style={{'--score':`${result.percentage}%`}}><div className="score-ring-inner"><small>YOUR POINTS</small><strong>{result.points}<i>/{result.total}</i></strong><span>{result.percentage}%</span></div></div>
+      <div className="score-details"><div><span>Recommended option মিলেছে</span><b>{result.points} <small>/ {result.total}</small></b></div><div><span>উত্তর দিয়েছ</span><b>{result.answered} <small>/ {result.total}</small></b></div><div><span>তোমার title</span><b className="rank-text">{title.emoji} {title.title}</b></div><div><span>Personal best</span><b>{best} / {result.total} {isNewBest && <small className="new-best">NEW BEST!</small>}</b></div></div>
+    </div>
+    <div className="result-message"><Sparkles size={19}/><div><b>{title.emoji} {title.title}</b><p>{title.line}</p></div></div>
+    <div className="result-actions"><button className="button button-primary button-large" onClick={() => setPage('setup')}><RotateCcw size={17}/> আবার খেলো</button><button className="button button-ghost button-large" onClick={shareStory}><Share2 size={17}/> Story share করো</button></div>
+    <button className="button button-ghost button-large story-download-button" onClick={downloadStory}><Download size={17}/> Story image download করো</button>
+    {shareStatus && <p className="share-status" role="status">{shareStatus}</p>}
     <button className="review-toggle" onClick={() => setShowReview(!showReview)}>{showReview?'উত্তর review বন্ধ করো':'সব উত্তর review করো'} <ArrowRight size={15} className={showReview?'rotate':''}/></button>
     {showReview && <div className="review-list">{result.questions.map((q,i) => {
       const answer = result.answers[i];
@@ -160,4 +275,4 @@ function ResultPage({ setPage, result, best, isNewBest }) {
   </div><Footer setPage={setPage}/></main>;
 }
 
-export default function App() { const [page, setPage] = useState('home'); const [player, setPlayer] = useState(''); const [best, setBest] = useState(getBest); const [result, setResult] = useState(null); const [isNewBest, setIsNewBest] = useState(false); useEffect(() => { document.title = `${({home:'Home',setup:'Player Setup',quiz:'Quiz',result:'Result'})[page] || 'Home'} — গর্বিত VUian`; window.scrollTo(0,0); }, [page]); useEffect(() => { const handleHash = () => { if (window.location.hash === '#home') { setPage('home'); window.history.replaceState(null,'',window.location.pathname); } }; window.addEventListener('hashchange',handleHash); return () => window.removeEventListener('hashchange',handleHash); }, []); const finish = (answers, name) => { const answered = answers.filter(answer => answer !== null).length; const points = QUESTIONS.filter((q,i) => answers[i] !== null && answers[i] === q.answer).length; const percentage = Math.round(points/QUESTIONS.length*100); const nextBest = Math.max(best,points); setIsNewBest(points>best); setBest(nextBest); try { localStorage.setItem('vuian-personal-best',String(nextBest)); } catch {} setResult({ name, answers, points, correctFacts:points, factTotal:QUESTIONS.length, funAnswered:answered, funTotal:QUESTIONS.length, answered, percentage, total:QUESTIONS.length, questions:QUESTIONS }); setPage('result'); }; return <><Header page={page} setPage={setPage}/>{page==='home'&&<HomePage setPage={setPage} best={best}/>}{page==='setup'&&<SetupPage setPage={setPage} player={player} setPlayer={setPlayer}/>}{page==='quiz'&&<QuizPage player={player||'VUian'} onFinish={finish} setPage={setPage}/>}{page==='result'&&result&&<ResultPage setPage={setPage} result={result} best={best} isNewBest={isNewBest}/>}</>; }
+export default function App() { const [page, setPage] = useState('home'); const [player, setPlayer] = useState(''); const [best, setBest] = useState(getBest); const [result, setResult] = useState(null); const [isNewBest, setIsNewBest] = useState(false); useEffect(() => { document.title = `${({home:'Home',setup:'Player Setup',quiz:'Quiz',result:'Result'})[page] || 'Home'} — গর্বিত VUian`; window.scrollTo(0,0); }, [page]); useEffect(() => { const handleHash = () => { if (window.location.hash === '#home') { setPage('home'); window.history.replaceState(null,'',window.location.pathname); } }; const syncBest = (event) => { if (event.key === BEST_SCORE_KEY) setBest(getBest()); }; window.addEventListener('hashchange',handleHash); window.addEventListener('storage',syncBest); return () => { window.removeEventListener('hashchange',handleHash); window.removeEventListener('storage',syncBest); }; }, []); const finish = (answers, name) => { const answered = answers.filter(answer => answer !== null).length; const points = QUESTIONS.filter((q,i) => answers[i] !== null && answers[i] === q.answer).length; const percentage = Math.round(points/QUESTIONS.length*100); const previousBest = Math.max(getBest(), best); const nextBest = Math.max(previousBest, points); setIsNewBest(points > previousBest); setBest(nextBest); try { window.localStorage.setItem(BEST_SCORE_KEY, String(nextBest)); } catch (error) { console.warn('Personal best could not be saved in this browser:', error); } setResult({ name, answers, points, correctFacts:points, factTotal:QUESTIONS.length, funAnswered:answered, funTotal:QUESTIONS.length, answered, percentage, total:QUESTIONS.length, questions:QUESTIONS }); setPage('result'); }; return <><Header page={page} setPage={setPage}/>{page==='home'&&<HomePage setPage={setPage} best={best}/>}{page==='setup'&&<SetupPage setPage={setPage} player={player} setPlayer={setPlayer}/>}{page==='quiz'&&<QuizPage player={player||'VUian'} onFinish={finish} setPage={setPage}/>}{page==='result'&&result&&<ResultPage setPage={setPage} result={result} best={best} isNewBest={isNewBest}/>}</>; }

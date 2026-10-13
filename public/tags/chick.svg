@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="confused baby chick holding a campus map">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffd36a" stop-opacity=".42"/><stop offset="1" stop-color="#171329" stop-opacity=".1"/></linearGradient>
+    <filter id="shadow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="18"/></filter>
+  </defs>
+  <circle cx="300" cy="300" r="245" fill="#ffd36a" opacity=".12" filter="url(#shadow)"/>
+  <circle cx="300" cy="300" r="226" fill="url(#g)" stroke="#ffd36a" stroke-opacity=".45" stroke-width="3"/>
+  <circle cx="300" cy="300" r="188" fill="#0b0d16" fill-opacity=".35" stroke="#ffffff" stroke-opacity=".12" stroke-width="2" stroke-dasharray="7 13"/>
+  <path d="M90 205 Q135 150 180 205 T270 205" fill="none" stroke="#ffd36a" stroke-width="5" stroke-linecap="round" opacity=".75"/>
+  <path d="M370 395 Q415 340 460 395 T550 395" fill="none" stroke="#ffd36a" stroke-width="5" stroke-linecap="round" opacity=".65"/>
+  <path d="M115 350 l15 -28 15 28 28 15 -28 15 -15 28 -15 -28 -28 -15z" fill="#ffd36a" opacity=".8"/>
+  <path d="M425 160 l12 -23 12 23 23 12 -23 12 -12 23 -12 -23 -23 -12z" fill="#ffffff" opacity=".8"/>
+  <text x="300" y="365" text-anchor="middle" font-size="220" font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif">🐣</text>
+  <text x="300" y="500" text-anchor="middle" font-size="21" font-family="Arial, sans-serif" font-weight="800" letter-spacing="5" fill="#ffd36a">CAMPUS VIBES</text>
+</svg>
